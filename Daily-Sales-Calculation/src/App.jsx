@@ -1,6 +1,8 @@
 
 import './App.css'
 
+import Greetings from './components/Greetings'
+
 function App() {
   
 
