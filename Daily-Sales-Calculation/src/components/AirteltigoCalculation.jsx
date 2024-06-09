@@ -45,13 +45,26 @@ const AirteltigoCalculation = () => {
       // Calculate the total price of the selected items
       const selectedTotalPrice = selectedItems.reduce((total, item) => total + item.price, 0);
     
-    
+      const [date, setDate] = React.useState(new Date());
+
+      React.useEffect(() => {
+        const timer = setInterval(() => {
+          setDate(new Date());
+        }, 1000);
+      },[]);
+
+      const copyToClipboard = () => {
+        const resultText = selectedItems.map(item => `${item.name} - GH₵${item.price.toFixed(2)}`).join('\n') + `\nTotal: GH₵${selectedTotalPrice.toFixed(2)}` + `\nDate and Time: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+        navigator.clipboard.writeText(resultText).then(() => {
+          alert('Copied to clipboard');
+        });
+      };
 
   return (
     <div>
       <div className='text-center rounded w-full mt-7'>
         <p className='text-xs text-red-700 font-bold'> 
-          DAILY SALES CALCULATION FOR AIRTELTIGO <br /> TAP BUTTON TO EXIT
+          DAILY SALES CALCULATOR FOR AIRTELTIGO <br /> TAP BUTTON TO EXIT
         </p>
         <div className='shadow-lg mx-5 rounded-lg border py-5 mt-6'>
           <p>Enter your sales package <br /> separated with +</p>
@@ -82,11 +95,15 @@ const AirteltigoCalculation = () => {
               <ul>
                 {selectedItems.map((item) => (
                   <li key={item.id}>
-                    {item.name} ----- ${item.price.toFixed(2)}
+                    {item.name} ------- &#8373;{item.price.toFixed(2)}
                   </li>
                 ))}
               </ul>
-              <h3>Total: GH&#8373; {selectedTotalPrice.toFixed(2)}</h3>
+              <h3 className=' my-3'>Total: GH&#8373; {selectedTotalPrice.toFixed(2)}</h3>
+
+              <h4 className=' text-blue-950'>{`${date.toLocaleDateString()}    ${date.toLocaleTimeString()}`}</h4>
+
+              <button className=' bg-blue-500 px-4 py-2 rounded-lg mt-2' onClick={copyToClipboard}>Copy</button>
             </div>
           )}
         </div>

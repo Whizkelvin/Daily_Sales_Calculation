@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 
 const MtnCalculation = () => {
 
@@ -20,6 +20,25 @@ const MtnCalculation = () => {
       // State to manage the input and selected items
       const [inputIds, setInputIds] = useState('');
       const [selectedItems, setSelectedItems] = useState([]);
+
+      useEffect(() => {
+        const savedInputIds = localStorage.getItem('inputIds');
+        const savedSelectedItems = localStorage.getItem('selectedItems');
+    
+        if (savedInputIds) {
+          setInputIds(savedInputIds);
+        }
+    
+        if (savedSelectedItems) {
+          setSelectedItems(JSON.parse(savedSelectedItems));
+        }
+    
+        const timer = setInterval(() => {
+          setDate(new Date());
+        }, 1000);
+    
+        return () => clearInterval(timer);
+      }, []);
     
       // Function to handle the input change
       const handleInputChange = (event) => {
@@ -39,6 +58,23 @@ const MtnCalculation = () => {
           parseAndSetItems();
         }
       };
+
+      const [date, setDate] = React.useState(new Date());
+
+      React.useEffect(() => {
+        const timer = setInterval(() => {
+          setDate(new Date());
+        }, 1000);
+      },[]);
+
+        // Function to copy results to clipboard
+       const copyToClipboard = () => {
+          const resultText = selectedItems.map(item => `${item.name} - GH₵${item.price.toFixed(2)}`).join('\n') + `\nTotal: GH₵${selectedTotalPrice.toFixed(2)}` + `\nDate and Time: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+          navigator.clipboard.writeText(resultText).then(() => {
+            alert('Copied to clipboard');
+          });
+        };
+
     
       // Calculate the total price of the selected items
       const selectedTotalPrice = selectedItems.reduce((total, item) => total + item.price, 0);
@@ -46,7 +82,7 @@ const MtnCalculation = () => {
     <div>
     <div className='text-center rounded w-full mt-7'>
       <p className='text-xs text-yellow-700 font-bold'> 
-        DAILY SALES CALCULATION FOR MTN <br /> TAP BUTTON TO EXIT
+        DAILY SALES CALCULATOR FOR MTN <br /> TAP BUTTON TO EXIT
       </p>
       <div className='shadow-lg mx-5 rounded-lg border py-5 mt-6'>
         <p>Enter your sales package <br /> separated with +</p>
@@ -77,11 +113,15 @@ const MtnCalculation = () => {
             <ul>
               {selectedItems.map((item) => (
                 <li key={item.id}>
-                  {item.name} ----- ${item.price.toFixed(2)}
+                  {item.name} ------- &#8373;{item.price.toFixed(2)}
                 </li>
               ))}
             </ul>
-            <h3>Total: GH&#8373; {selectedTotalPrice.toFixed(2)}</h3>
+            <h3 className=' my-3'>Total: GH&#8373; {selectedTotalPrice.toFixed(2)}</h3>
+                
+              <h4 className=' text-red-600'>{`${date.toLocaleDateString()}    ${date.toLocaleTimeString()}`}</h4>
+
+              <button className=' bg-yellow-500 px-4 py-2 rounded-lg mt-2' onClick={copyToClipboard}>Copy</button>
           </div>
         )}
       </div>
