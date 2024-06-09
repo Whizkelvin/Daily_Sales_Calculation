@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MtnCalculation from './components/MtnCalculation';
 import AirteltigoCalculation from './components/AirteltigoCalculation';
 
 const Calculation = () => {
-  const [activeButton, setActiveButton] = useState('MTN');
+  const [activeButton, setActiveButton] = useState(() => {
+    // Use localStorage to get the active button state, default to 'MTN'
+    return localStorage.getItem('activeButton') || 'MTN';
+  });
 
   const handleButtonClick = (buttonType) => {
     setActiveButton(buttonType);
   };
+
+  // Save the active button state to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('activeButton', activeButton);
+  }, [activeButton]);
 
   return (
     <div className='text-center flex flex-col justify-center items-center mb-12 scrollbar-hidden bg-gradient-to-t from-green-200 to-blue-200 py-8'>
