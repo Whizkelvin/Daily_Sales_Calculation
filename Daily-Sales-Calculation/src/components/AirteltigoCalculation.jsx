@@ -53,10 +53,17 @@ const AirteltigoCalculation = () => {
         }, 1000);
       },[]);
 
+      const [isCopy, setIsCopy] = useState("copy");
+
       const copyToClipboard = () => {
-        const resultText = selectedItems.map(item => `${item.name} - GH₵${item.price.toFixed(2)}`).join('\n') + `\nTotal: GH₵${selectedTotalPrice.toFixed(2)}` + `\nDate and Time: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+        const resultText = `AirtelTigo Data Sales\n\nPack  Price\n\n` + selectedItems.map(item => `${item.name} - GH₵${item.price.toFixed(2)}`).join('\n') + `\n\nTotal: GH₵${selectedTotalPrice.toFixed(2)}` + `\n\nOrder Placed on:\n${date.toLocaleDateString()} ${date.toLocaleTimeString()} \n\nMAKE PAYMENT TO \n053-790-5668\nJude Nii Djan Dodoo`;
         navigator.clipboard.writeText(resultText).then(() => {
-          alert('Copied to clipboard');
+          setTimeout(() => {
+            setIsCopy("copied")
+            setTimeout(() => {
+              setIsCopy("copy")
+            }, 2000)
+          }, 200);
         });
       };
 
@@ -85,25 +92,27 @@ const AirteltigoCalculation = () => {
             </button>
           </div>
         </div>
-        <div className='shadow-lg mx-5 rounded-lg border py-5 mt-7'>
-          <div className='flex text-center items-center justify-center font-bold underline mt-'>
-            <p>Package</p>
+        <div className='shadow-lg rounded-lg border py-5 mt-7 mx-5'>
+          <div className='flex text-center items-center justify-center font-bold underline  text-2xl font-extrabold text-red-700'>
+            <p>Packages</p>
             <p className='ml-5'>Prices</p>
           </div>
           {selectedItems.length > 0 && (
             <div>
-              <ul>
+              <ul className=' text-xl font-extrabold'>
                 {selectedItems.map((item) => (
                   <li key={item.id}>
                     {item.name} ------- &#8373;{item.price.toFixed(2)}
                   </li>
                 ))}
               </ul>
-              <h3 className=' my-3'>Total: GH&#8373; {selectedTotalPrice.toFixed(2)}</h3>
+              <h3 className=' my-3 text-xl font-extrabold'>Total: GH&#8373; {selectedTotalPrice.toFixed(2)}</h3>
 
-              <h4 className=' text-blue-950'>{`${date.toLocaleDateString()}    ${date.toLocaleTimeString()}`}</h4>
+              <h3 className=' text-xl font-extrabold text-red-600'>Order Placed on <br /></h3>
 
-              <button className=' bg-blue-500 px-4 py-2 rounded-lg mt-2' onClick={copyToClipboard}>Copy</button>
+              <h4 className=' text-blue-950 text-xl font-extrabold'>{`${date.toLocaleDateString()}    ${date.toLocaleTimeString()}`}</h4>
+
+              <button className=' bg-blue-500 px-4 py-2 rounded-lg mt-2 ' onClick={copyToClipboard}>{isCopy}</button>
             </div>
           )}
         </div>
